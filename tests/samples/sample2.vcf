@@ -1,0 +1,22 @@
+##fileformat=VCFv4.2
+##FORMAT=<ID=AD,Number=R,Type=Integer,Description="Allelic depths (counting only informative reads out of the total reads) for the ref and alt alleles in the order listed">
+##FORMAT=<ID=AF,Number=A,Type=Float,Description="Allele fractions for alt alleles in the order listed">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##DRAGENCommandLine=<ID=dragen,Version="SW: 05.021.572.3.6.3, HW: 05.021.572",Date="Thu Dec 03 14:14:11 UTC 2020",CommandLineOptions="-r /opt/data/ref/Human/Hg19/genome_ref/hg19 --cram-input /opt/data/output/Beilinson/20-10615_HPVD4/Mapper/v3.6.3_586385c/20-10615_HPVD4.cram --output-directory varcaller --enable-map-align false --output-file-prefix 20-10615_HPVD4.dragen --pair-by-name true --vc-emit-ref-confidence GVCF --enable-variant-caller true -f --qc-coverage-region-1 /opt/data/bed/HPD_v4_target.txt.bed">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (informative and non-informative); some reads may have been filtered based on mapq etc.">
+##INFO=<ID=MQ,Number=1,Type=Float,Description="RMS Mapping Quality">
+##contig=<ID=chr1,length=249250621>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	proband
+chr1	700	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420
+chr1	702	.	C	A,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	2/2:10,30,160:0.8,0.15:200:420
+chr1	705	.	A	*	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/0:180,20:0.1:200:420
+chr1	705	.	A	ACG,G	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/2:10,30,160:0.8,0.15:200:420
+chr1	705	.	A	*,G	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/0:180,10,10:0.05,0.05:200:420
+chr1	815	.	N	G	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1/1:10,190:0.95:200:420
+chr1	2086	.	ATCA	GTGA,AGCG	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1/2:10,100,90:0.5,0.45:200:420
+chr1	2136	.	CA	C,CAAA,CAAAAAA,CAAAA,CAAAAA,CAA	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	2/4:10,10,40,10,90,20,20:0.05,0.2,0.05,0.45,0.1,0.1:200:420
+chr1	2200	.	C	T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	./1:10,190:0.95:200:420
+chr1	2201	.	A	G	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	./.:10,190:0.95:200:420
+chrM	4	.	C	A	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,190:0.95:200:420
