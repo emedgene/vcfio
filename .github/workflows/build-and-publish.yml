@@ -29,10 +29,7 @@ jobs:
       - name: Set package version - ${{ steps.vars.outputs.tag }}
         id: write-version
         run: poetry version ${{ steps.vars.outputs.tag }}
-      - name: Build package with poetry
-        id: build-pip
-        run: poetry build
       - name: Publish package to PyPi
         id: publish-pip
         run: |
-          poetry publish 
+          poetry publish --build --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
