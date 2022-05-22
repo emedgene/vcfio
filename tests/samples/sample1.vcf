@@ -1,0 +1,84 @@
+##fileformat=VCFv4.2
+##DRAGENVersion=<ID=dragen,Version="SW: 05.021.572.3.6.3, HW: 05.021.572">
+##reference=file:///home/centos/GRCh37/reference.bin
+##bcftools_normVersion=1.9+htslib-1.9
+##bcftools_mergeVersion=1.9+htslib-1.9
+##SnpEffVersion="4.0e (build 2014-09-13), by Pablo Cingolani"
+##SnpSiftVersion="SnpSift 4.0e (build 2014-09-13), by Pablo Cingolani"
+##VEP="v100" time="2021-10-13 10:10:18" cache="/root/.vep/homo_sapiens/100_GRCh37" ensembl=100 ensembl-io=100 ensembl-variation=100 ensembl-funcgen=100 1000genomes="phase3" COSMIC="90" ClinVar="201912" ESP="20141103" HGMD-PUBLIC="20194" assembly="GRCh37.p13" dbSNP="153" gencode="GENCODE 19" genebuild="2011-04" gnomAD="r2.1" polyphen="2.2.2" regbuild="1.0" sift="sift5.2.2"
+##VEP="v100" time="2021-10-13 10:10:15" cache="/root/.vep/homo_sapiens_refseq/100_GRCh37" ensembl-io=100 ensembl=100 ensembl-funcgen=100 ensembl-variation=100 1000genomes="phase3" COSMIC="90" ClinVar="201912" ESP="20141103" HGMD-PUBLIC="20194" assembly="GRCh37.p13" dbSNP="153" gencode="GENCODE 19" genebuild="2011-04" gnomAD="r2.1" polyphen="2.2.2" refseq="01_2015" regbuild="1.0" sift="sift5.2.2"
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="None">
+##INFO=<ID=END,Number=2,Type=Integer,Description="None">
+##INFO=<ID=SVLEN,Number=3,Type=Integer,Description="None">
+##INFO=<ID=DN,Number=4,Type=String,Description="None">
+##INFO=<ID=customized_column,Number=5,Type=String,Description="None">
+##INFO=<ID=NMD,Number=.,Type=String,Description="Predicted nonsense mediated decay effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+##INFO=<ID=LOF,Number=.,Type=String,Description="Predicted loss of function effects for this variant. Format: 'Gene_Name | Gene_ID | Number_of_transcripts_in_gene | Percent_of_transcripts_affected' ">
+##INFO=<ID=EFF,Number=.,Type=String,Description="Predicted effects for this variant.Format: 'Effect ( Effect_Impact | Functional_Class | Codon_Change | Amino_Acid_Change| Amino_Acid_length | Gene_Name | Transcript_BioType | Gene_Coding | Transcript_ID | Exon_Rank  | Genotype_Number [ | ERRORS | WARNINGS ] )' ">
+##INFO=<ID=VARTYPE,Number=A,Type=Flag,Description="Variant types {SNP,MNP,INS,DEL,Mixed}">
+##INFO=<ID=HET,Number=0,Type=Flag,Description="Variant is heterozygous">
+##INFO=<ID=HOM,Number=0,Type=Flag,Description="Variant is homozygous">
+##INFO=<ID=MIXED,Number=0,Type=Flag,Description="Variant is mixture of INS/DEL/SNP/MNP">
+##INFO=<ID=DEL,Number=0,Type=Flag,Description="Variant is an deletion">
+##INFO=<ID=INS,Number=0,Type=Flag,Description="Variant is an insertion">
+##INFO=<ID=MNP,Number=0,Type=Flag,Description="Variant is an MNP">
+##INFO=<ID=SNP,Number=0,Type=Flag,Description="Variant is a SNP">
+##INFO=<ID=CSQ,Number=.,Type=String,Description="Consequence annotations from Ensembl VEP. Format: Allele|Consequence|IMPACT|SYMBOL|Gene|Feature_type|Feature|BIOTYPE|EXON|INTRON|HGVSc|HGVSp|cDNA_position|CDS_position|Protein_position|Amino_acids|Codons|Existing_variation|DISTANCE|STRAND|FLAGS|SYMBOL_SOURCE|HGNC_ID|REFSEQ_MATCH|REFSEQ_OFFSET|GIVEN_REF|USED_REF|BAM_EDIT|HGVS_OFFSET">
+##FORMAT=<ID=GT,Number=0,Type=String,Description="GT">
+##FORMAT=<ID=MQM,Number=1,Type=String,Description="MQM">
+##FORMAT=<ID=DP,Number=2,Type=String,Description="DP">
+##FORMAT=<ID=AB,Number=3,Type=String,Description="AB">
+##FORMAT=<ID=BQ,Number=4,Type=String,Description="BQ">
+##FORMAT=<ID=GQ,Number=5,Type=String,Description="GQ">
+##FORMAT=<ID=VCF,Number=7,Type=String,Description="VCF">
+##FORMAT=<ID=QUAL,Number=8,Type=String,Description="QUAL">
+##FORMAT=<ID=AD,Number=9,Type=String,Description="AD">
+##FORMAT=<ID=AZ,Number=10,Type=String,Description="AZ">
+##FORMAT=<ID=BC,Number=11,Type=String,Description="BC">
+##FORMAT=<ID=CN,Number=12,Type=String,Description="CN">
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=SampleFT,Description="No sample passes all the sample-level filters (at the field FORMAT/FT)">
+##FILTER=<ID=cnvQual,Description="CNV with quality below 10">
+##FILTER=<ID=cnvBinSupportRatio,Description="CNV with low supporting number of bins with respect to event length">
+##FILTER=<ID=cnvCopyRatio,Description="CNV with copy ratio within +/- 0.2 of 1.0">
+##FILTER=<ID=DRAGENSnpHardQUAL,Description="Set if true:QUAL < 10.41">
+##FILTER=<ID=DRAGENIndelHardQUAL,Description="Set if true:QUAL < 7.83">
+##FILTER=<ID=LowDepth,Description="Set if true:DP <= 1">
+##FILTER=<ID=LowGQ,Description="Set if true:GQ = 0">
+##FILTER=<ID=PloidyConflict,Description="Genotype call from variant caller not consistent with chromosome ploidy">
+##FILTER=<ID=RMxNRepeatRegion,Description="Site filtered because all or part of the variant allele is a repeat of the reference">
+##FILTER=<ID=INDEL,Description="Set if true:Qual < 10 || DP < 10.0">
+##FILTER=<ID=SNP,Description="Set if true:Qual < 10 || DP < 10.0">
+##FILTER=<ID=MNP,Description="Multi nucleotide variant">
+##contig=<ID=chrM,length=16569>
+##contig=<ID=chr1,length=249250621>
+##contig=<ID=chr2,length=243199373>
+##contig=<ID=chr3,length=198022430>
+##contig=<ID=chr4,length=191154276>
+##contig=<ID=chr5,length=180915260>
+##contig=<ID=chr6,length=171115067>
+##contig=<ID=chr7,length=159138663>
+##contig=<ID=chr8,length=146364022>
+##contig=<ID=chr9,length=141213431>
+##contig=<ID=chr10,length=135534747>
+##contig=<ID=chr11,length=135006516>
+##contig=<ID=chr12,length=133851895>
+##contig=<ID=chr13,length=115169878>
+##contig=<ID=chr14,length=107349540>
+##contig=<ID=chr15,length=102531392>
+##contig=<ID=chr16,length=90354753>
+##contig=<ID=chr17,length=81195210>
+##contig=<ID=chr18,length=78077248>
+##contig=<ID=chr19,length=59128983>
+##contig=<ID=chr20,length=63025520>
+##contig=<ID=chr21,length=48129895>
+##contig=<ID=chr22,length=51304566>
+##contig=<ID=chrX,length=155270560>
+##contig=<ID=chrY,length=59373566>
+##ALT=<ID=CNV,Description="Copy number variant region">
+##ALT=<ID=DEL,Description="Deletion relative to the reference">
+##ALT=<ID=DUP,Description="Region of elevated copy number relative to the reference">
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2E_GRCh37
+chr1	180235571	2E_2	C	<DEL>	.	PASS	SVTYPE=DEL;END=180243501;SVLEN=7930;DN=DeNovo;HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:.:0:0.0:0:0:DRGN3.6:.:0,0:0:99999:.
+chr5	69728749	2E_2	G	<DEL>	.	PASS	SVTYPE=DEL;END=70242661;SVLEN=513912;DN=DeNovo;HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:.:0:0.0:0:0:DRGN3.6:.:0,0:0:99999:.
+chr7	117199648	rs74571530	T	G	.	PASS	DN=;EFF=missense_variant(MODERATE|MISSENSE|tTt/tGt|p.Phe508Cys/c.1523T>G|1480|CFTR|protein_coding|CODING|NM_000492.3|11|1);HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:250.0:53:0.45:0:48:DRGN3.6:.:29,24:0:99999:.

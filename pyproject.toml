@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "vcfio"
+version = "1.1.0"
+description = "A simple and efficient VCF manipulation package."
+authors = ["shencar <barak.shencar@gmail.com>"]
+maintainers = ["shencar <barak.shencar@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/emedgene/vcfio"
+keywords = [
+    "vcf",
+    "variant",
+    "genetics",
+    "bioinformatics",
+    "emedgene",
+    "illumina"
+]
+
+[tool.poetry.dependencies]
+python = "^3.6"
+biopython = {version = "^1.79", optional = true}
+pysam = {version = "^0.18", optional = true}
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0.1"
+pytest-cov = "^3.0.0"
+
+[tool.poetry.extras]
+bio = ["biopython", "pysam"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
