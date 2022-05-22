@@ -138,3 +138,8 @@ d.get('this_is_a_list_but_i_like_strings', empty_value='.')         # --> '1,2,3
 # Credits
 This package uses the following open source packages:
 - [PyVCF](https://github.com/jdoughertyii/PyVCF/)
+
+# Contributors
+<img src="https://img.shields.io/github/contributors-anon/emedgene/vcfio"/>
+
+<a href="https://github.com/emedgene/vcfio/graphs/contributors"><img src="https://contrib.rocks/image?repo=emedgene/vcfio&max=240&columns=18" /></a>
