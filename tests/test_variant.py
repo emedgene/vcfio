@@ -21,6 +21,7 @@ class TestVariant:
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'DP', 200),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'AF', [0.8, 0.15]),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'XX', '.'),
+        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00;XY=20	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'XY', '.'),
     ])
     def test_get_value(self, line, sample_names, key, expected_output):
         variant = Variant.from_variant_line(line, sample_names=sample_names)

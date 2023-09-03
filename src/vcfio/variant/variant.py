@@ -29,12 +29,9 @@ class Variant(VariantProperties):
 
     def get_value(self, key: AnyStr, sample_name: AnyStr, empty_value='.', default='.', infer_type=False):
         """
-        Try to find the key in the sample
-            If not found try to find it in self.info
-                If not found return default
+        Try to find the key in the sample, If not found return default
         """
-        return self.samples[sample_name].get(key, empty_value=empty_value, infer_type=infer_type) or \
-               self.info.get(key, empty_value=empty_value, default=default, infer_type=infer_type)
+        return self.samples[sample_name].get(key, empty_value=empty_value, default=default, infer_type=infer_type)
 
     def stringify_info(self):
         fields = []
