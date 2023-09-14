@@ -1,19 +1,42 @@
-import gzip
+from __future__ import annotations
+
+import logging
 import sys
 from pathlib import Path
-from typing import TextIO
+from typing import TYPE_CHECKING
 
-from Bio import bgzf
+if TYPE_CHECKING:
+    from typing import TextIO
 
+def get_open_method(path: Path, mode, encoding='utf-8'):
+    from gzip import open as gzip_open
+    try:
+        from Bio.bgzf import open as bgzip_open
+    except ModuleNotFoundError:
+        logging.warning("Biopython module not found - using gzip. It is recommended to pip install biopython.")
+        bgzip_open = gzip_open
 
-def is_gzip(filepath: Path) -> bool:
-    with filepath.open(mode='rb') as fin:
-        header = fin.read(2)
-    return header[:2] == b"\x1f\x8b"
+    if 'b' in mode:
+        encoding = None
 
+    if 'r' in mode:
+        with path.open(mode='rb') as fin:
+            header = fin.read(4)
+        if header == b'\x1f\x8b\x08\x08':
+            return gzip_open(path, mode, encoding=encoding)
+        if header == b'\x1f\x8b\x08\x04':
+            try:
+                return bgzip_open(path, mode, encoding=encoding)
+            except TypeError:
+                return bgzip_open(path, mode)
+    elif '.gz' in path.suffixes or '.bgz' in path.suffixes:
+        try:
+            return bgzip_open(path, mode, encoding=encoding)
+        except TypeError:
+            return bgzip_open(path, mode)
 
-def bgzf_open(path, mode, encoding='utf-8'):
-    return bgzf.open(path, mode)
+    return open(path, mode, encoding=encoding)
+
 
 
 def open_file(path: Path, mode='r') -> TextIO:
@@ -27,12 +50,8 @@ def open_file(path: Path, mode='r') -> TextIO:
             f = f.buffer
         return f
     else:
+        if 't' not in mode:
+            mode += 't'
         if 'w' in mode:
             path.parent.mkdir(exist_ok=True, parents=True)
-            _open = bgzf_open if '.gz' in path.suffixes else open
-            return _open(path, mode, encoding='utf-8')
-        else:
-            if 't' not in mode:
-                mode += 't'
-            _open = gzip.open if is_gzip(path) else open
-            return _open(path, mode, encoding='utf-8')
+        return get_open_method(path, mode, encoding='utf-8')
