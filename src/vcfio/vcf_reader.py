@@ -46,10 +46,7 @@ class VcfReader:
         return False
 
     def close(self):
-        try:
-            self._file_descriptor.close()
-        except ValueError:  # will be raised when fd is already closed
-            pass
+        self._file_descriptor.close()
 
     def __iter__(self) -> Iterator[Variant]:
         return self
