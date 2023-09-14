@@ -17,14 +17,8 @@ class Variant(VariantProperties):
     # A class with implementation of methods
 
     def is_sv(self) -> bool:
-        """ Return whether or not the variant is a structural variant """
+        """ Return whether the variant is a structural variant """
         return self.info.get('SVTYPE') is not None
-
-    def get_value(self, key: AnyStr, sample_name: AnyStr, empty_value='.', default='.', infer_type=False):
-        """
-        Try to find the key in the sample, If not found return default
-        """
-        return self.samples[sample_name].get(key, empty_value=empty_value, default=default, infer_type=infer_type)
 
     def stringify_info(self):
         fields = []
