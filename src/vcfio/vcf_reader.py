@@ -1,12 +1,16 @@
+from __future__ import annotations
+
 import functools
 import logging
 from pathlib import Path
-from typing import AnyStr
-from typing import Iterator
-from typing import List
-from typing import Union
 
-from pysam import TabixFile
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import AnyStr
+    from typing import Iterator
+    from typing import List
+    from typing import Union
+
 
 from vcfio.utils.file_utils import open_file
 from vcfio.utils.regex_patterns import ALT_PATTERN

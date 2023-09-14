@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 from cmath import nan
 from collections import OrderedDict
-from typing import AnyStr
-from typing import List
-from typing import Tuple
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import AnyStr
+    from typing import List
+    from typing import Tuple
 
 from vcfio.utils.easy_dict import EasyDict
 from vcfio.utils.str_utils import standardize_chromosome
@@ -10,7 +15,8 @@ from vcfio.utils.str_utils import to_number
 
 
 class VariantProperties:
-    # A class for raw strings as attributes and parsed types for properties
+    # Variant is split into 2 classes to avoid a "War and Peace" situation
+    # This class is for Variant's properties and basic parsing methods
 
     def __init__(self, chromosome=None, position=None, vcf_id=None, ref=None, alt=None, quality=None,
                  vcf_filter=None, info=None, sample_format=None, sample_names=None, samples=None):
