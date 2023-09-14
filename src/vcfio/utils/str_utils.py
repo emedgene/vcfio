@@ -1,12 +1,7 @@
-from __future__ import annotations
 import functools
-from typing import TYPE_CHECKING
+from typing import AnyStr
 
-from vcfio.utils.exceptions import GTException
-
-if TYPE_CHECKING:
-    from typing import AnyStr
-
+from vcfio.utils.consts import GT_ZYGOSITY_MAP
 from vcfio.utils.enums import Zygosity
 from vcfio.utils.regex_patterns import GT_PATTERN
 
@@ -32,7 +27,7 @@ def standardize_chromosome(raw_chr):
     chromosome = raw_chr
     if not chromosome.startswith('chr'):
         chromosome = 'chr' + raw_chr
-    if chromosome == 'chrMT':
+    if chromosome in ('chrM', 'chrMT'):
         chromosome = 'chrM'
 
     return chromosome
@@ -44,19 +39,6 @@ def calculate_zygosity(gt: AnyStr) -> Zygosity:
     examples:
         '0/1' -> HET
         './.' -> NO_COVERAGE
-        '1/1' -> HOM
-        '0/0' -> REF
-        '1/3' -> HET
     """
-    try:
-        gt_set = set(GT_PATTERN.findall(gt)[0])
-    except IndexError:
-        raise GTException(gt)
-
-    if gt_set == {'.'}:
-        return Zygosity.no_coverage
-    if gt_set == {'0'}:
-        return Zygosity.reference
-    if len(gt_set) == 1:
-        return Zygosity.homozygote
-    return Zygosity.heterozygote
+    gt_pair = GT_PATTERN.findall(gt)[0]
+    return GT_ZYGOSITY_MAP.get(gt_pair, Zygosity.no_coverage)

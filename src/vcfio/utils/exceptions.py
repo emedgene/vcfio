@@ -1,8 +1,3 @@
-from __future__ import annotations
-
-from typing import AnyStr
-
-
 class InvalidZygosity(Exception):
     def __init__(self, chromosome, position, zygosity):
         self.chromosome = chromosome
@@ -19,10 +14,3 @@ class InvalidVariantLine(Exception):
 
     def __str__(self):
         return f'Variant line from vcf is invalid: {self.line}'
-
-
-class GTException(Exception):
-    def __init__(self, gt: AnyStr):
-        self.gt = gt
-    def __str__(self):
-        return f'Invalid GT: {self.gt}'

@@ -1,62 +1,50 @@
-from __future__ import annotations
-
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import AnyStr
+from typing import Iterable
+from typing import List
 
 from vcfio.utils.file_utils import open_file
 from vcfio.variant.variant import Variant
 
-if TYPE_CHECKING:
-    from typing import Union
-    from typing import AnyStr
-    from typing import Iterable
-
 REQUIRED_HEADERS = (
     '##fileformat=VCFv4.2',
-    '#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	{sample_names}'
+    '#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT {sample_names}'
 )
 
 
 class VcfWriter:
-    def __init__(self, output_file: Union[AnyStr, Path]):
-        """
-        output_file -- /path/to/output
-        headers -- array of vcf headers - should comply with VCF specifications
-        variants -- array of Variants
-        """
+    def __init__(self, output_file: AnyStr, headers: List[AnyStr] = REQUIRED_HEADERS,
+                 variants: Iterable[Variant] = []):
         self.output_file = Path(output_file)
+        self.headers = headers
+        self.variants = variants
+        self._headers_written = False
 
-        self._file_descriptor = open_file(self.output_file, mode='w')
-        self._write_last_header = False
+        self.file = open_file(self.output_file, mode='w')
+        self._raw_variant_iterator = self.file
 
-    def write(self, headers: Iterable[AnyStr] = (), variants: Iterable[Variant] = ()):
+    def write(self):
         """
         Write the headers and variants to self.output_path
-        If headers is empty - will write REQUIRED HEADERS (using sample names from `variants` parameter
+        ** This method will close the output file **
         """
-        self.write_headers(headers)
-        self.write_variants(variants)
-
-    def write_headers(self, headers: Iterable[AnyStr] = ()):
-        if not headers:
-            headers = [REQUIRED_HEADERS[0]]
-            self._write_last_header = True
-        for header in headers:
-            self._file_descriptor.write(header)
-            self._file_descriptor.write('\n')
-
-    def write_variants(self, variants: Iterable[Variant]):
-        for variant in variants:
+        self._write_headers()
+        for variant in self.variants:
             self.write_variant(variant)
 
-    def write_variant(self, variant: Variant):
-        if self._write_last_header:
-            self._file_descriptor.write(REQUIRED_HEADERS[-1].format(sample_names='\t'.join(variant.sample_names)))
-            self._file_descriptor.write('\n')
-            self._write_last_header = False
+    def _write_headers(self, sample_names=()):
+        if not self._headers_written:
+            for header in self.headers:
+                if header == REQUIRED_HEADERS[-1]:
+                    header = header.format(sample_names='\t'.join(sample_names))
+                self.file.write(header)
+                self.file.write('\n')
+            self._headers_written = True
 
-        self._file_descriptor.write(variant.to_vcf_line())
-        self._file_descriptor.write('\n')
+    def write_variant(self, variant):
+        self._write_headers(variant.samples.keys())
+        self.file.write(variant.to_vcf_line())
+        self.file.write('\n')
 
     def __enter__(self):
         return self
@@ -66,4 +54,4 @@ class VcfWriter:
         return False
 
     def close(self):
-        self._file_descriptor.close()
+        self.file.close()

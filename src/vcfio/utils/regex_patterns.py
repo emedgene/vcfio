@@ -1,8 +1,5 @@
 import re
 
-# The following regular expressions were taken from PyVCF
-# https://github.com/jamescasbon/PyVCF/blob/476169cd457ba0caa6b998b301a4d91e975251d9/vcf/parser.py#L84-L111
-
 INFO_PATTERN = re.compile(r'''\#\#INFO=<
             ID=(?P<id>[^,]+),\s*
             Number=(?P<number>-?\d+|\.|[AGR]),\s*
@@ -37,4 +34,4 @@ CONTIG_PATTERN = re.compile(r'''\#\#contig=<
 
 META_PATTERN = re.compile(r'''##(?P<id>.+?)=(?P<val>.+)''')
 
-GT_PATTERN = re.compile('([0-9]+|\.)[/|]([0-9]+|\.)')
+GT_PATTERN = re.compile('([01.])[|/]?([01.]?)')

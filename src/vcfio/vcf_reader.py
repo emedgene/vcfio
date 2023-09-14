@@ -1,15 +1,11 @@
-from __future__ import annotations
-
 import functools
-import logging
 from pathlib import Path
+from typing import AnyStr
+from typing import Iterator
+from typing import List
+from typing import Union
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from typing import AnyStr
-    from typing import Iterator
-    from typing import List
-    from typing import Union
+from pysam import TabixFile
 
 from vcfio.utils.file_utils import open_file
 from vcfio.utils.regex_patterns import ALT_PATTERN
@@ -34,6 +30,7 @@ class VcfReader:
         self.metadata = {}
         self._default_sample_format = ''
         self._file_descriptor = open_file(self.input_file)
+        self._raw_variant_iterator = self._file_descriptor
         _ = self.headers
 
     def __enter__(self):
@@ -44,7 +41,8 @@ class VcfReader:
         return False
 
     def close(self):
-        self._file_descriptor.close()
+        if not self._file_descriptor.closed:
+            self._file_descriptor.close()
 
     def __iter__(self) -> Iterator[Variant]:
         return self
@@ -54,7 +52,7 @@ class VcfReader:
         Iterate variants and yield Variant instances
         If sample format is not given in the raw line then use the FIRST format in the file
         """
-        line = next(self._file_descriptor)
+        line = next(self._raw_variant_iterator)
         if not line or line.isspace():
             raise StopIteration
 
@@ -109,32 +107,21 @@ class VcfReader:
         If there is a tabix file - fetch using pysam
         Else - open another reader of the same path and iterate the selected variant
         """
-        try:
-            yield from self._fetch_by_index(chromosome, end, start)
-        except OSError:  # .tbi file not found
-            logging.warning(f"Tab-index file not found ({self.input_file.as_posix() + '.tbi'}) - using regular iteration.")
-            yield from self._fetch_by_iteration(chromosome, end, start)
-        except ModuleNotFoundError:  # if pysam is not installed
-            logging.warning("Pysam module not found - using regular iteration.")
-            yield from self._fetch_by_iteration(chromosome, end, start)
+        if Path(self.input_file.as_posix() + '.tbi').exists():
+            with TabixFile(filename=self.input_file.as_posix(), encoding='utf-8') as tabix_file:
+                for line in tabix_file.fetch(standardize_chromosome(chromosome), start - 1, end - 1 if end else None):
+                    yield Variant.from_variant_line(line,
+                                                    sample_names=self.sample_names,
+                                                    default_sample_format=self._default_sample_format)
 
-    def _fetch_by_index(self, chromosome, end, start):
-        from pysam import TabixFile
-        with TabixFile(filename=self.input_file.as_posix(), encoding='utf-8') as tabix_file:
-            for line in tabix_file.fetch(standardize_chromosome(chromosome), start - 1, end - 1 if end else None):
-                yield Variant.from_variant_line(
-                    line,
-                    sample_names=self.sample_names,
-                    default_sample_format=self._default_sample_format
-                )
+        else:
+            with VcfReader(self.input_file) as sub_reader:
+                for variant in sub_reader:
+                    if variant.chromosome == chromosome and variant.position in range(start, end):
+                        yield variant
+                    if variant.position == end:
+                        break
 
-    def _fetch_by_iteration(self, chromosome, end, start):
-        with VcfReader(self.input_file) as sub_reader:
-            for variant in sub_reader:
-                if variant.chromosome == chromosome and variant.position in range(start, end):
-                    yield variant
-                if variant.position == end:
-                    break
 
     def __repr__(self):
         return f"VcfReader('{self.input_file.absolute()}')"
