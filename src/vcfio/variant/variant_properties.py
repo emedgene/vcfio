@@ -13,7 +13,7 @@ class VariantProperties:
     # A class for raw strings as attributes and parsed types for properties
 
     def __init__(self, chromosome=None, position=None, vcf_id=None, ref=None, alt=None, quality=None,
-                 vcf_filter=[], info=None, sample_format=None, sample_names=[], samples=[]):
+                 vcf_filter=None, info=None, sample_format=None, sample_names=None, samples=None):
         """
         All parameters are raw strings, the class' properties will parse them (if needed).
         All the raw attributes are stored as _<attribute-name> and the properties are without _ .
@@ -24,10 +24,16 @@ class VariantProperties:
         self._ref = ref
         self._alt = alt
         self._quality = quality
+        if vcf_filter is None:
+            vcf_filter = []
         self._vcf_filter = vcf_filter
         self._raw_info = info
         self._parsed_info = None
         self._sample_format = sample_format
+        if samples is None:
+            samples = []
+        if sample_names is None:
+            sample_names = []
         self._sample_names = sample_names
         self._raw_samples = tuple(samples)
         self._parsed_samples = None

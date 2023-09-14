@@ -14,8 +14,8 @@ class TestVcfWriter:
     ))
     def test_write_w_variants_headers(self, input_file, expected_output_file):
         output_path = Path('/tmp/output.vcf')
-        with VcfReader(input_file) as reader, VcfWriter(output_path, variants=reader, headers=reader.headers) as writer:
-            writer.write()
+        with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
+            writer.write(variants=reader, headers=reader.headers)
         assert output_path.read_bytes().strip() == Path(expected_output_file).read_bytes().strip()
 
     @pytest.mark.parametrize("input_file, expected_output_file", (
@@ -23,8 +23,8 @@ class TestVcfWriter:
     ))
     def test_write_w_variants(self, input_file, expected_output_file):
         output_path = Path('/tmp/output.vcf')
-        with VcfReader(input_file) as reader, VcfWriter(output_path, variants=reader) as writer:
-            writer.write()
+        with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
+            writer.write(variants=reader)
 
         for actual_line, expected_line in zip_longest(output_path.read_bytes().splitlines(),
                                               Path(expected_output_file).read_bytes().splitlines()):
@@ -37,8 +37,8 @@ class TestVcfWriter:
     ))
     def test_write_w_headers(self, input_file, expected_output_file):
         output_path = Path('/tmp/output.vcf')
-        with VcfReader(input_file) as reader, VcfWriter(output_path, headers=reader.headers) as writer:
-            writer.write()
+        with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
+            writer.write(headers=reader.headers)
         assert output_path.read_bytes().strip() == Path(expected_output_file).read_bytes().strip()
 
     @pytest.mark.none
@@ -61,6 +61,6 @@ class TestVcfWriter:
     ))
     def test_write_filetypes(self, tmp_path, output_suffix, input_file, write_headers, expected_output_file):
         output_path = tmp_path / ('output' + output_suffix)
-        with VcfReader(input_file) as reader, VcfWriter(output_path, headers=reader.headers, variants=reader) as writer:
-            writer.write()
+        with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
+            writer.write(headers=reader.headers, variants=reader)
         assert open_file(output_path).read(9999999).encode().strip() == Path(expected_output_file).read_bytes().strip()

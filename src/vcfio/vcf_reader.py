@@ -1,4 +1,5 @@
 import functools
+import logging
 from pathlib import Path
 from typing import AnyStr
 from typing import Iterator
@@ -109,21 +110,33 @@ class VcfReader:
         If there is a tabix file - fetch using pysam
         Else - open another reader of the same path and iterate the selected variant
         """
-        if Path(self.input_file.as_posix() + '.tbi').exists():
-            with TabixFile(filename=self.input_file.as_posix(), encoding='utf-8') as tabix_file:
-                for line in tabix_file.fetch(standardize_chromosome(chromosome), start - 1, end - 1 if end else None):
-                    yield Variant.from_variant_line(line,
-                                                    sample_names=self.sample_names,
-                                                    default_sample_format=self._default_sample_format)
+        try:
+            yield from self._fetch_by_index(chromosome, end, start)
+        except OSError:  # .tbi file not found
+            logging.warning(
+                f"Tab-index file not found ({self.input_file.as_posix() + '.tbi'}) - using regular iteration.")
+            yield from self._fetch_by_iteration(chromosome, end, start)
+        except ModuleNotFoundError:  # if pysam is not installed
+            logging.warning("Pysam module not found - using regular iteration.")
+            yield from self._fetch_by_iteration(chromosome, end, start)
 
-        else:
-            with VcfReader(self.input_file) as sub_reader:
-                for variant in sub_reader:
-                    if variant.chromosome == chromosome and variant.position in range(start, end):
-                        yield variant
-                    if variant.position == end:
-                        break
+    def _fetch_by_index(self, chromosome, end, start):
+        from pysam import TabixFile
+        with TabixFile(filename=self.input_file.as_posix(), encoding='utf-8') as tabix_file:
+            for line in tabix_file.fetch(standardize_chromosome(chromosome), start - 1, end - 1 if end else None):
+                yield Variant.from_variant_line(
+                    line,
+                    sample_names=self.sample_names,
+                    default_sample_format=self._default_sample_format
+                )
 
+    def _fetch_by_iteration(self, chromosome, end, start):
+        with VcfReader(self.input_file) as sub_reader:
+            for variant in sub_reader:
+                if variant.chromosome == chromosome and variant.position in range(start, end):
+                    yield variant
+                if variant.position == end:
+                    break
 
     def __repr__(self):
         return f"VcfReader('{self.input_file.absolute()}')"

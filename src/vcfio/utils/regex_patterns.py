@@ -1,5 +1,8 @@
 import re
 
+# The following regular expressions were taken from PyVCF
+# https://github.com/jamescasbon/PyVCF/blob/476169cd457ba0caa6b998b301a4d91e975251d9/vcf/parser.py#L84-L111
+
 INFO_PATTERN = re.compile(r'''\#\#INFO=<
             ID=(?P<id>[^,]+),\s*
             Number=(?P<number>-?\d+|\.|[AGR]),\s*
