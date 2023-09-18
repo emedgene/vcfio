@@ -32,4 +32,4 @@ jobs:
       - name: Publish package to PyPi
         id: publish-pip
         run: |
-          poetry publish --build --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
+          poetry publish --build --username __token__ --password ${{ secrets.PYPI_EMEDGENE_API_KEY }}
