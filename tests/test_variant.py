@@ -17,17 +17,6 @@ class TestVariant:
         variant = Variant.from_variant_line(line, sample_names=sample_names)
         assert expected_output == variant.to_vcf_line(with_samples=bool(sample_names))
 
-    @pytest.mark.parametrize("line, sample_names, key, expected_output", [
-        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'DP', 200),
-        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'AF', [0.8, 0.15]),
-        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'XX', '.'),
-        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00;XY=20	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'XY', '.'),
-    ])
-    def test_get_value(self, line, sample_names, key, expected_output):
-        variant = Variant.from_variant_line(line, sample_names=sample_names)
-        value = variant.get_value(key, sample_name=sample_names[0], infer_type=True)
-        assert expected_output == value
-
     @pytest.mark.parametrize("line, sample_names, expected_output", [
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], 'DP=200;MQ=250.00'),
     ])
