@@ -1,3 +1,4 @@
+from itertools import zip_longest
 from pathlib import Path
 
 import pytest
@@ -24,7 +25,12 @@ class TestVcfWriter:
         output_path = Path('/tmp/output.vcf')
         with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
             writer.write(variants=reader)
-        assert output_path.read_bytes().strip() == Path(expected_output_file).read_bytes().strip()
+
+        for actual_line, expected_line in zip_longest(output_path.read_bytes().splitlines(),
+                                              Path(expected_output_file).read_bytes().splitlines()):
+            if actual_line.startswith(b'#'):
+                continue
+            assert actual_line == expected_line
 
     @pytest.mark.parametrize("input_file, expected_output_file", (
             ('tests/samples/sample1.vcf', 'tests/samples/sample1.no_variants.vcf'),

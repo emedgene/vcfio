@@ -1,17 +1,11 @@
-from __future__ import annotations
-
+import hashlib
 import re
 from cmath import nan
-from typing import TYPE_CHECKING
+from typing import AnyStr
+from typing import Iterable
+from typing import TextIO
 
-from vcfio.utils.exceptions import GTException
-
-if TYPE_CHECKING:
-    from typing import AnyStr
-    from typing import Iterable
-    from typing import TextIO
-
-from vcfio.utils.enums import Chromosomes
+from vcfio.utils.consts import VALID_CHROMOSOMES
 from vcfio.utils.enums import Zygosity
 from vcfio.utils.exceptions import InvalidVariantLine
 from vcfio.utils.exceptions import InvalidZygosity
@@ -20,8 +14,7 @@ from vcfio.variant.variant_properties import VariantProperties
 
 
 class Variant(VariantProperties):
-    # Variant is split into 2 classes to avoid a War and Peace situation
-    # This class implements Variant's methods
+    # A class with implementation of methods
 
     def is_sv(self) -> bool:
         """ Return whether or not the variant is a structural variant """
@@ -75,14 +68,14 @@ class Variant(VariantProperties):
         gt = self.samples[sample_name].get('GT', './.')
         try:
             return calculate_zygosity(gt)
-        except GTException:
+        except IndexError:
             raise InvalidZygosity(self.chromosome, self.position, gt)
 
     def is_sample_called(self, sample_name):
         return '.' not in self.samples[sample_name].get('GT', '.')
 
     def is_chromosome_valid(self):
-        return self.chromosome in Chromosomes.__members__
+        return self.chromosome in VALID_CHROMOSOMES
 
     @classmethod
     def from_variant_line(cls, variant_line: TextIO, sample_names: Iterable[AnyStr] = (),

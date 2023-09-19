@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from typing import List
     from typing import Union
 
+
 from vcfio.utils.file_utils import open_file
 from vcfio.utils.regex_patterns import ALT_PATTERN
 from vcfio.utils.regex_patterns import CONTIG_PATTERN
@@ -34,6 +35,7 @@ class VcfReader:
         self.metadata = {}
         self._default_sample_format = ''
         self._file_descriptor = open_file(self.input_file)
+        self._raw_variant_iterator = self._file_descriptor
         _ = self.headers
 
     def __enter__(self):
@@ -54,7 +56,7 @@ class VcfReader:
         Iterate variants and yield Variant instances
         If sample format is not given in the raw line then use the FIRST format in the file
         """
-        line = next(self._file_descriptor)
+        line = next(self._raw_variant_iterator)
         if not line or line.isspace():
             raise StopIteration
 
@@ -112,7 +114,8 @@ class VcfReader:
         try:
             yield from self._fetch_by_index(chromosome, end, start)
         except OSError:  # .tbi file not found
-            logging.warning(f"Tab-index file not found ({self.input_file.as_posix() + '.tbi'}) - using regular iteration.")
+            logging.warning(
+                f"Tab-index file not found ({self.input_file.as_posix() + '.tbi'}) - using regular iteration.")
             yield from self._fetch_by_iteration(chromosome, end, start)
         except ModuleNotFoundError:  # if pysam is not installed
             logging.warning("Pysam module not found - using regular iteration.")
