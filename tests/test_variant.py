@@ -67,8 +67,13 @@ class TestVariant:
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.heterozygote),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1/1:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.homozygote),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/0:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.reference),
-        ('chrX	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.homozygote),
-        ('chrM	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	.:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.no_coverage),
+        ('chrX	726	.	G	T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.reference),
+        ('chrX	726	.	G	C	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.homozygote),
+        ('chr13	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	.:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.no_coverage),
+        ('chr14	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	./1:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.no_coverage),
+        ('chr15	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/.:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.no_coverage),
+        ('chr16	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	./.:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.no_coverage),
+        ('chr16	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	1/2:10,160,30:0.8,0.15:200:420', ['proband'], Zygosity.heterozygote),
     ])
     def test_get_zygosity(self, line, sample_names, expected_output):
         variant = Variant.from_variant_line(line, sample_names=sample_names)
@@ -81,6 +86,7 @@ class TestVariant:
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/:10,160,30:0.8,0.15:200:420'),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	|1:10,160,30:0.8,0.15:200:420'),
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	a/1:10,160,30:0.8,0.15:200:420'),
+        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	11/1:10,160,30:0.8,0.15:200:420'),
     ])
     def test_invalid_zygosity(self, line):
         variant = Variant.from_variant_line(line, sample_names=['proband'])
