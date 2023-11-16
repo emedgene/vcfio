@@ -1,9 +1,7 @@
 import functools
-from typing import AnyStr
+from typing import Optional
 
-from vcfio.utils.consts import GT_ZYGOSITY_MAP
 from vcfio.utils.enums import Zygosity
-from vcfio.utils.regex_patterns import GT_PATTERN
 
 
 def to_number(value, default=''):
@@ -33,12 +31,46 @@ def standardize_chromosome(raw_chr):
     return chromosome
 
 
-def calculate_zygosity(gt: AnyStr) -> Zygosity:
+def calculate_zygosity(genotype: str) -> Optional[Zygosity]:
     """
     calculate zygosity of a sample
     examples:
         '0/1' -> HET
         './.' -> NO_COVERAGE
     """
-    gt_pair = GT_PATTERN.findall(gt)[0]
-    return GT_ZYGOSITY_MAP.get(gt_pair, Zygosity.no_coverage)
+    zygosity = None
+    if len(genotype) == 1:
+        zygosity = _parse_haploid(genotype)
+    elif len(genotype) == 3:
+        zygosity = _parse_diploid(genotype)
+
+    return zygosity
+
+
+def _parse_haploid(genotype: str) -> Optional[Zygosity]:
+    if genotype == '0':
+        return Zygosity.reference
+    elif genotype.isdigit():
+        return Zygosity.homozygote
+    else:
+        return None
+
+
+def _parse_diploid(genotype: str) -> Optional[Zygosity]:
+    x, sep, y = genotype[0], genotype[1], genotype[2]
+    if sep not in '/|':
+        return None
+    elif x == '.' or y == '.':
+        return Zygosity.no_coverage
+    elif x == y:
+        if x == '0':
+            return Zygosity.reference
+        elif x.isdigit():
+            return Zygosity.homozygote
+        else:
+            return None
+    else:
+        if x.isdigit() and y.isdigit():
+            return Zygosity.heterozygote
+        else:
+            return None
