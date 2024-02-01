@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING
-
+import logging
 from vcfio.utils.file_utils import open_file
 from vcfio.variant.variant import Variant
 
@@ -53,9 +53,10 @@ class VcfWriter:
             elif line.startswith("##"):
                 return 1
             elif line.startswith("#CHROM"):
-                return 3
-            else:
                 return 2
+            else:
+                logging.warning(f"This line is not a header. It will be added after the headers.\n{line}")
+                return 3
         return sorted(headers, key=custom_sort)
 
     def write_variants(self, variants: Iterable[Variant]):
