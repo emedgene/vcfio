@@ -41,9 +41,22 @@ class VcfWriter:
         if not headers:
             headers = [REQUIRED_HEADERS[0]]
             self._write_last_header = True
-        for header in headers:
+        sorted_headers = self.sort_headers(headers)
+        for header in sorted_headers:
             self._file_descriptor.write(header)
             self._file_descriptor.write('\n')
+
+    def sort_headers(self, headers: Iterable[AnyStr] = ()):
+        def custom_sort(line):
+            if line.startswith("##fileformat"):
+                return 0
+            elif line.startswith("##"):
+                return 1
+            elif line.startswith("#CHROM"):
+                return 3
+            else:
+                return 2
+        return sorted(headers, key=custom_sort)
 
     def write_variants(self, variants: Iterable[Variant]):
         for variant in variants:

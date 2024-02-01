@@ -64,3 +64,18 @@ class TestVcfWriter:
         with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
             writer.write(headers=reader.headers, variants=reader)
         assert open_file(output_path).read(9999999).encode().strip() == Path(expected_output_file).read_bytes().strip()
+
+    @pytest.mark.parametrize("input_file, expected_output_file", (
+            ('tests/samples/sample1.vcf', 'tests/samples/sample1.info_rank.vcf'),
+    ))
+    def test_write_non_sorted_headers(self, input_file, expected_output_file):
+        output_path = Path('/tmp/output.vcf')
+        with VcfReader(input_file) as reader, VcfWriter(output_path) as writer:
+            new_headers = [
+                '##INFO=<ID=tier1_rank,Number=1,Type=Integer,Description="AI rank for tier 1">',
+                '##INFO=<ID=tier2_rank,Number=1,Type=Integer,Description="AI rank for tier 2">'
+            ]
+            # add headers at the end of the headers list and write to file
+            headers = reader.headers + new_headers
+            writer.write(variants=reader, headers=headers)
+        assert output_path.read_bytes().strip() == Path(expected_output_file).read_bytes().strip()
