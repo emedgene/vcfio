@@ -1,4 +1,6 @@
 ##fileformat=VCFv4.2
+##INFO=<ID=tier1_rank,Number=1,Type=Integer,Description="AI rank for tier 1">
+##INFO=<ID=tier2_rank,Number=1,Type=Integer,Description="AI rank for tier 2">
 ##DRAGENVersion=<ID=dragen,Version="SW: 05.021.572.3.6.3, HW: 05.021.572">
 ##reference=file:///home/centos/GRCh37/reference.bin
 ##bcftools_normVersion=1.9+htslib-1.9
@@ -78,9 +80,7 @@
 ##ALT=<ID=CNV,Description="Copy number variant region">
 ##ALT=<ID=DEL,Description="Deletion relative to the reference">
 ##ALT=<ID=DUP,Description="Region of elevated copy number relative to the reference">
-##INFO=<ID=tier2_rank,Number=1,Type=Integer,Description="AI rank for tier 2">
 #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	2E_GRCh37
-not a header line
 chr1	180235571	2E_2	C	<DEL>	.	PASS	SVTYPE=DEL;END=180243501;SVLEN=7930;DN=DeNovo;HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:.:0:0.0:0:0:DRGN3.6:.:0,0:0:99999:.
 chr5	69728749	2E_2	G	<DEL>	.	PASS	SVTYPE=DEL;END=70242661;SVLEN=513912;DN=DeNovo;HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:.:0:0.0:0:0:DRGN3.6:.:0,0:0:99999:.
 chr7	117199648	rs74571530	T	G	.	PASS	DN=;EFF=missense_variant(MODERATE|MISSENSE|tTt/tGt|p.Phe508Cys/c.1523T>G|1480|CFTR|protein_coding|CODING|NM_000492.3|11|1);HET	GT:MQM:DP:AB:BQ:GQ:VCF:QUAL:AD:AZ:BC:CN	0/1:250.0:53:0.45:0:48:DRGN3.6:.:29,24:0:99999:.
