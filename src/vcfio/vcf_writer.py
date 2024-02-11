@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import TYPE_CHECKING
-
 from vcfio.utils.file_utils import open_file
 from vcfio.variant.variant import Variant
 
@@ -41,9 +40,27 @@ class VcfWriter:
         if not headers:
             headers = [REQUIRED_HEADERS[0]]
             self._write_last_header = True
-        for header in headers:
+        sorted_headers = self.__order_headers(headers)
+        for header in sorted_headers:
             self._file_descriptor.write(header)
             self._file_descriptor.write('\n')
+
+    def __order_headers(self, input_headers):
+        output_headers = input_headers[:]
+        first_line_exists = False
+        for i, header in enumerate(input_headers):
+            if header.startswith("##fileformat"):
+                if i != 0:
+                    output_headers.remove(header)
+                    output_headers.insert(0, header)
+                first_line_exists = True
+            elif header.startswith("#CHROM"):
+                if i < len(input_headers) - 1:
+                    output_headers.remove(header)
+                    output_headers.append(header)
+        if not first_line_exists:
+            output_headers.insert(0, REQUIRED_HEADERS[0])
+        return output_headers
 
     def write_variants(self, variants: Iterable[Variant]):
         for variant in variants:
