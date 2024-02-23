@@ -60,10 +60,10 @@ class Variant(VariantProperties):
 
     def get_zygosity(self, sample_name) -> Zygosity:
         gt = self.samples[sample_name].get('GT', './.')
-        try:
-            return calculate_zygosity(gt)
-        except IndexError:
+        zyg = calculate_zygosity(gt)
+        if zyg is None:
             raise InvalidZygosity(self.chromosome, self.position, gt)
+        return zyg
 
     def is_sample_called(self, sample_name):
         return '.' not in self.samples[sample_name].get('GT', '.')
