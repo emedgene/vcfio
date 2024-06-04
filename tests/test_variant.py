@@ -27,7 +27,7 @@ class TestVariant:
 
     @pytest.mark.parametrize("line, sample_names, expected_output", [
         ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420', ['proband'], ['0/1:10,160,30:0.8,0.15:200:420']),
-        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420  0/1:10,160,30:0.8,0.15:200:420', ['proband', 'father'], ['0/1:10,160,30:0.8,0.15:200:420', '0/1:10,160,30:0.8,0.15:200:420']),
+        ('chr1	726	.	G	C,T	500	.	DP=200;MQ=250.00	GT:AD:AF:DP:GQ	0/1:10,160,30:0.8,0.15:200:420	0/1:10,160,30:0.8,0.15:200:420', ['proband', 'father'], ['0/1:10,160,30:0.8,0.15:200:420', '0/1:10,160,30:0.8,0.15:200:420']),
     ])
     def test_stringify_samples(self, line, sample_names, expected_output):
         variant = Variant.from_variant_line(line, sample_names=sample_names)
