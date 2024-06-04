@@ -1,9 +1,6 @@
-import hashlib
-import re
 from cmath import nan
 from typing import AnyStr
 from typing import Iterable
-from typing import TextIO
 
 from vcfio.utils.consts import VALID_CHROMOSOMES
 from vcfio.utils.enums import Zygosity
@@ -72,7 +69,7 @@ class Variant(VariantProperties):
         return self.chromosome in VALID_CHROMOSOMES
 
     @classmethod
-    def from_variant_line(cls, variant_line: TextIO, sample_names: Iterable[AnyStr] = (),
+    def from_variant_line(cls, variant_line: str, sample_names: Iterable[AnyStr] = (),
                           default_sample_format: Iterable[AnyStr] = ()) -> 'Variant':
         """
         Create a Variant instance from a raw line
@@ -80,7 +77,7 @@ class Variant(VariantProperties):
             Input - "chr3    2956    .       G       GACACACAC       100     .       AC=1;AN=2;DP4=1,0,6,0;DP=7;IDV=6;IMF=0.857143;INDEL;MQ0F=0;MQ=51;SGB=-0.616816;VDB=0.041536;multiallele.gid=1   GT:PL:AD        0/1:111,0,113:0,4"
             Output - Variant(chromosome=chr3,position=2956,ref=G,alt=['GACACACAC'])
         """
-        variant_line_values = re.split('\t| +', variant_line.strip('\n'))
+        variant_line_values = variant_line.strip('\n').split('\t')
 
         if len(variant_line_values) < 8:
             raise InvalidVariantLine(variant_line)
