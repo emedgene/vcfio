@@ -127,3 +127,24 @@ class TestVariant:
         variant = Variant.from_variant_line(line)
         variant.info = new_value
         assert expected_output == variant.info
+
+    @pytest.mark.parametrize("chromosome, position, ref, alt, quality, vcf_filter, info, expected_info", [
+        pytest.param("chr1", 100, "C", "G", 200, "PASS", {"DP": 90, "KEY0": "A", "KEY1": "A/B"}, {"DP": 90, "KEY0": "A", "KEY1": "A/B"}, id="normal_variant"),
+        pytest.param("chr1", 100, "C", "G", 200, "PASS", {"DP": 90, "KEY0": "A", "KEY1": "A;B"}, {"DP": 90, "KEY0": "A", "KEY1": "A/B"}, id="variant_with_semicolon_value")
+    ])
+    def test_info_dict_setter(self, chromosome: str, position: int, ref: str, alt: str, quality: int, vcf_filter: str, info: dict, expected_info: dict):
+        variant = Variant(
+            chromosome=chromosome,
+            vcf_id=".",
+            position=position,
+            ref="N",
+            quality=100,
+            alt='<T>',
+            vcf_filter=vcf_filter,
+            info=info,
+            sample_format='QS',
+            sample_names=("proband",),
+            samples=(str(quality),),
+        )
+        assert variant.info == expected_info
+#

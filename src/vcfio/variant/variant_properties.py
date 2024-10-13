@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from cmath import nan
 from collections import OrderedDict
+from typing import Any
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -110,7 +111,8 @@ class VariantProperties:
 
         # User set the value (example: variant.info = {'SVTYPE': 'DEL', 'DN': 'DeNovo'}
         if isinstance(self._raw_info, dict):
-            self._parsed_info = EasyDict(self._raw_info)
+
+            self._parsed_info = EasyDict({k: self.safe_info_item(v) for k, v in self._raw_info.items()})
             return self._parsed_info
 
         self._parsed_info = EasyDict()
@@ -178,3 +180,9 @@ class VariantProperties:
 
     def __repr__(self):
         return f'Variant(chromosome={self.chromosome},position={self.position},ref={self.ref},alt={self.alt})'
+
+    @staticmethod
+    def safe_info_item(value: Any) -> str | Any:
+        if isinstance(value, str) and ";" in value:
+            return value.replace(";", "/")
+        return value
