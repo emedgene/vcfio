@@ -21,14 +21,9 @@ def get_open_method(path: Path, mode, encoding='utf-8'):
 
     if 'r' in mode:
         with path.open(mode='rb') as fin:
-            header = fin.read(4)
-        if header == b'\x1f\x8b\x08\x08':
+            header = fin.read(2)
+        if header == b'\x1f\x8b':
             return gzip_open(path, mode, encoding=encoding)
-        if header == b'\x1f\x8b\x08\x04':
-            try:
-                return bgzip_open(path, mode, encoding=encoding)
-            except TypeError:
-                return bgzip_open(path, mode)
     elif '.gz' in path.suffixes or '.bgz' in path.suffixes:
         try:
             return bgzip_open(path, mode, encoding=encoding)
