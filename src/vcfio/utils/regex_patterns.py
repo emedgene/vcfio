@@ -36,5 +36,3 @@ CONTIG_PATTERN = re.compile(r'''\#\#contig=<
             >''', re.VERBOSE)
 
 META_PATTERN = re.compile(r'''##(?P<id>.+?)=(?P<val>.+)''')
-
-GT_PATTERN = re.compile('([0-9]+|\.)[/|]([0-9]+|\.)')
